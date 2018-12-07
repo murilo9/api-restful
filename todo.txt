@@ -1,0 +1,5 @@
+resources
+CRUD
+login/logout session
+file upload
+file read/write
