@@ -1,4 +1,4 @@
-resources
+resources ok
 CRUD
 login/logout session
 file upload
