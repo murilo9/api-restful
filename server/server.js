@@ -34,26 +34,21 @@ app.listen(8888, function () {
     });
 });
 
-/* Router de um recurso genérico */
+/* Router de um recurso genérico para teste de requests */
+
 app.route('/recurso/test')      //Rota de testes
     .get(function(req, res){
-        console('GET request recebida em /recurso');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        console.log('GET request recebida em /recurso');
         //middleware
-        res.send('get recurso');    //Envia resposta em texto simples
+        res.send('<resposta>get recurso</resposta>');    //Envia resposta em texto XML (ou HTML ou texto simples)
     })
     .post(function(req, res){
-        console('POST request recebida em /recurso');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        console.log('POST request recebida em /recurso');
         //middleware
-        var resObj = {resposta: 'POST recurso'};
+        var resObj = {resposta: 'post recurso'};
         res.json(resObj);    //Envia resposta em JSON
     })
-    .put(function(req, res){
-        console('GET request recebida em /recurso');
-        //middleware
-        res.send('<p>put recurso</p>');    //Envia resposta em HTML
-    })
-    .delete(function(req, res){
-        console('GET request recebida em /recurso');
-        //middleware
-        res.send('<resposta>delete recurso</resposta>');    //Envia resposta em XML
-    });
+    //TODO router de put
+    //TODO delete router de delete
