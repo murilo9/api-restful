@@ -6,10 +6,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-    <div>       <!-- Login -->
-
+    <div id="vueLogin">       <!-- Login -->
+        <h2>Fazer Login</h2>
+        <form>
+            Email: <input type="text" v-model="login"><br><br>
+            Senha: <input type="password" v-model="senha"><br><br>
+            <button type="button" v-on:click="fazerLogin()">Login</button><br><br>
+        </form>
+        <button type="button" onclick="location.href='cadastro.html'">Cadastrar</button>
     </div>
     <div id="vueTest">       <!-- Teste de API -->
+        <h2>Teste de requests</h2>
         <button type="button" v-on:click="clickButton('get')">Get</button>
         <button type="button" v-on:click="clickButton('post')">Post</button>
         <!-- TODO button put e delete -->
