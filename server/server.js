@@ -53,7 +53,34 @@ app.route('/recurso/test')      //Rota de testes
     //TODO router de put
     //TODO delete router de delete
 
-    /* Router de login
+/* Router de session 
+    Recebe um objeto com parâmetro sessionId,
+    retorna um status que indica se a session é válida ou não
+*/
+app.route('/session')
+.get(function(req, res){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    //Coleta os dados da request:
+    var sessionId = req.query.sessionId;
+    //Verifica se a session existe:
+    var i = 0;
+    var found = 0;
+    var data = new Date();
+    while(i < session.length && found == 0){    //Percorre o array de sessions
+        if(session[i].id == sessionId && session[i].expireDate < data)
+            found = 1;
+        i++;
+    }
+    if(found == 1)      //Caso esta session seja válida
+        res.end();          //Envia resposta vazia com stauts 200
+    else{               //Caso esta session não tena sido encontrada
+        console.log('session id não encontrada: '+sessionId);
+        res.status(404);    //Envia resposta vazia com status 404 not found
+        res.end();      
+    }
+});
+
+/* Router de login
     Recebe um objeto com parâmetros usuario e senha,
     retorna um sessionId que deve ser armazenado em um cookie no cliente
 */
@@ -63,8 +90,6 @@ app.route('/login')
     //Coleta os dados da request:
     var login = req.body.login;
     var senha = req.body.senha;
-    console.log(login);
-    console.log(senha);
     //Define o script SQL:
     var sql = "SELECT stSenha FROM tbUsuarios WHERE stEmail='"+ login + "'";
     //Faz a consulta:
@@ -75,8 +100,6 @@ app.route('/login')
             res.end();
         }else{
             //Faz a leitura do resultado:
-            console.log(result[0]);
-            console.log('result lenght:'+result.lenght);
             if(result[0].stSenha == senha){     //Caso a senha esteja correta
                 var id = Math.floor(Math.random()*99999999);     //Gera o session id
                 var expireDate = new Date();
@@ -112,6 +135,7 @@ app.route('/logout')
             session.splice(i, 1);       //Deleta esta session do array de sessions
             sessionDestroyed = 1;
         }
+        i++;
     }
     if(sessionDestroyed == 1){      //Caso a session tenha sido destruída
         res.send('');           //Envia response vazia com status OK

@@ -1,5 +1,5 @@
 resources ok
 CRUD
-login/logout session
+login/logout session ok
 file upload
 file read/write
