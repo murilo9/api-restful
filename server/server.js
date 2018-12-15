@@ -123,24 +123,26 @@ Recebe um objeto com parâmetro sessionId,
 retorna status 400 em caso de logout bem-sucedido
 */
 app.route('/logout')
-.post(function(req, res){
+.get(function(req, res){
     res.setHeader('Access-Control-Allow-Origin', '*');
     //Coleta os dados da request:
-    var sessionId = req.body.sessionId;
+    var sessionId = req.query.sessionId;
+    console.log('logout id: '+sessionId);
     //Verifica se a session id existe:
     var sessionDestroyed = 0;
     var i = 0;
     while(i < session.length || !sessionDestroyed){
-        if(sessionId == obj.id && sessionDestroyed == 0){   //Se a session fornecida for igual a encontrada
+        if(sessionId == session[i].id && sessionDestroyed == 0){   //Se a session fornecida for igual a encontrada
             session.splice(i, 1);       //Deleta esta session do array de sessions
             sessionDestroyed = 1;
         }
         i++;
     }
     if(sessionDestroyed == 1){      //Caso a session tenha sido destruída
-        res.send('');           //Envia response vazia com status OK
+        res.end();
         console.log('session destruída, logout feito com sucesso');
     }else{                  //Caso a session não tenha sido encontrada
-        res.status(404);        //Status: 404 not found
+        console.log('session id não encontrada para logout: '+sessionId);
+        res.end(); 
     }
 });
