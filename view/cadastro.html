@@ -7,7 +7,16 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 </head>
 <body>
-
+    <div id="vueCadastro">
+        <h2>Cadastrar Usuário</h2>
+        <form>
+            Nome: <input type="text" v-model="nome"><br><br>
+            Email: <input type="text" v-model="email"> (será usado como login)<br><br>
+            Senha: <input type="password" v-model="senha"><br><br>
+            Reisira a senha: <input type="password" v-model="resenha"><br><br>
+            <button type="button" @click="validarForm">Cadastrar</button>
+        </form>
+    </div>
     <script src="../controller/cadastro-controller.js"></script>
 </body>
 </html>
