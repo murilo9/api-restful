@@ -2,10 +2,11 @@ var sistemaController = new Vue({
     el: "#vueSistema",
 
     data: { 
+        dataAgora: new Date(),
         select: {tipo: 'id', valor: '', spec: ''},    //Objeto da request de select
-        create: {},     //Objeto da request de create
-        delete: {},     //Objeto da request de delete
-        update: {},      //Objeto da request de update
+        create: {funcao: 'create', id: '', nome: '', dono: ''},     //Objeto da request de create
+        delete: {funcao: 'delete'},     //Objeto da request de delete
+        update: {funcao: 'update'},      //Objeto da request de update
         recursos: []
     },
 
@@ -45,13 +46,29 @@ var sistemaController = new Vue({
                 }
             });
         },
-        createRecurso: function(){              //-----Função de Create----
+        criarRecurso: function(){              //-----Função de Create----
+            //Adiciona os dados que faltam:
+            var self = this;        //Variável self para referenciar data
+            this.create.id = Math.floor(Math.random()*9999999)      //Gera uma id aleatória
+            this.create.dono = Cookies.get('login');
+            $.ajax({
+                url: 'http://localhost:8888/recurso',
+                method: 'post',
+                data: self.create,
+                statusCode: {
+                    500: function(){ alert('Erro no servidor, tente de novo') },
+                    400: function(){ alert('Bad request (erro no código da página)') }
+                },
+                success: function(res){
+                    alert('Recurso inserido com sucesso');
+                    self.selectRecurso(0);
+                }
+            });
+        },
+        deletarRecurso: function(){              //----Função de Delete----
             //TODO
         },
-        deleteRecurso: function(){              //----Função de Delete----
-            //TODO
-        },
-        updateRecurso: function(){              //----Função de Update----
+        atualizarRecurso: function(){              //----Função de Update----
             //TODO
         }
     },

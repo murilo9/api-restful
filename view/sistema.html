@@ -21,7 +21,14 @@
         <a href="#" @click="fazerLogout">Logout</a>
         <div>
             <h3>Recursos</h3>
+            <div id="cria">
+                <h4>Criar Recurso</h4>
+                Nome: <input type="text" v-model="create.nome"> 
+                <button type="button" @click="criarRecurso">Inserir</button><br><br>
+                Data atual: {{ dataAgora }}<br><br>
+            </div>
             <div id="busca">
+                <h4>Buscar Recurso</h4>
                 Buscar por: 
                 <input type="radio" name="buscaTipo" value="id" v-model="select.tipo"> id
                 <input type="radio" name="buscaTipo" value="nome" v-model="select.tipo"> Nome

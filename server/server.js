@@ -136,7 +136,19 @@ app.route('/recurso')
         var funcao = req.body.funcao;
         switch(funcao){
             case 'create':      //Criar recurso
-
+                //Coleta os dados da request:
+                var recursoId = req.body.id;
+                var recursoNome = req.body.nome;
+                var reecursoDono = req.body.dono;
+                //Tenta fazer a inserção no BD:
+                var sql = "INSERT INTO tbRecursos VALUES("+recursoId+",'"+recursoNome+"',NOW(),'"+reecursoDono+"')";
+                pool.query(sql, function(err, result, fields){
+                    if(err){
+                        console.log(err);
+                        res.status(500);
+                    }
+                    res.end();
+                });
                 break;
             
             case 'update':      //Atualizar recurso
