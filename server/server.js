@@ -53,6 +53,106 @@ app.route('/recurso/test')      //Rota de testes
     //TODO router de put
     //TODO delete router de delete
 
+/* Router de CRUD de recursos 
+    Recebe uma request com parâmetro indicando a função (exceto para Read),
+    retorna [...]
+*/
+app.route('/recurso')
+    .get(function(req, res){        //----------------Get: Read----------------
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        console.log('recebeu GET recurso');
+        //Coleta os dados da request:
+        var recursoSpec = req.query.spec;
+        if(recursoSpec == 1){       //Se for pra ler um recurso específico
+            var buscaValor = req.query.valor;    //Coleta a id do recurso específico a ser buscado
+            var buscaTipo = req.query.tipo;      //Coleta o critério da busca
+            if(buscaTipo == undefined){     //Verifica se buscaTipo é undefined
+                res.status(400);    //Status: 400 bad request
+                res.end();
+                return 0;
+            }
+        }
+
+        //Tenta coletar os dados do(s) recurso(s) no BD:
+        if(recursoSpec == 1){               //Coletar recurso específico
+            console.log('buscar recurso específico: '+buscaTipo+'; valor: '+buscaValor);
+            switch(buscaTipo){      //Define o sql script com base no critério de busca
+                case 'id':      //Busca por id
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                        "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.itId="+buscaValor;
+                    break;
+
+                case 'nome':    //Busca por nome
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                        "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.stNome='"+buscaValor+"'";
+                    break;
+
+                case 'data':    //Busca por data
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                        "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.dtData="+buscaValor;
+                    break;
+
+                case 'dono':    //Busca por dono
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                        "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE U.stNome='"+buscaValor+"'";
+                    break;
+
+                default:
+                    res.status(401);    //Status: 400 bad request
+                    res.end();
+                    return 0;
+            }
+        }
+        else if(recursoSpec == 0){                              //Coletar todos os recursos: define o script para SELECT *
+            console.log('buscar todos os recursos');
+            var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                        "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail";
+        }
+        //Faz a consulta:
+        pool.query(sql, function(err, result, fields){
+            if(err){    //Em caso de erro na execução da consulta
+                console.log(err);
+                res.status(500);    //Status: 500 internal server error
+                res.end();
+                return 0;
+            }
+            var recursos = [];      //Objeto que será enviado na response
+            result.forEach(function(val, i){
+                var tmp = {id: '', nome: '', data: '', dono: '', donoNome: ''};    //Objeto temporário que acomodará os dados
+                tmp.id = result[i].id;
+                tmp.nome = result[i].nome;
+                tmp.data = result[i].data;
+                tmp.dono = result[i].dono;
+                tmp.donoNome = result[i].donoNome;
+                recursos.push(tmp);     //Insere o objeto temporário no array de recursos
+            });
+            res.send(recursos);     //Envia o objeto com os dados na response
+        });
+    })
+
+    .post(function(req, res){       //----------------Post: Create, Update, Remove----------------
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        //Coleta os dados da request:
+        var funcao = req.body.funcao;
+        switch(funcao){
+            case 'create':      //Criar recurso
+
+                break;
+            
+            case 'update':      //Atualizar recurso
+
+                break;
+
+            case 'delete':      //Deletar recurso
+
+                break;
+
+            default:            //Em caso de função desconhecida
+                res.status(400);    //Status: 400 bad request
+                res.end();
+        }
+    });
+
 /* Router de session 
     Recebe um objeto com parâmetro sessionId,
     retorna um status que indica se a session é válida ou não
@@ -129,19 +229,10 @@ app.route('/logout')
     var sessionId = req.query.sessionId;
     console.log('logout id: '+sessionId);
     //Verifica se a session id existe:
-    var sessionDestroyed = 0;
-    var i = 0;
-    while(i < session.length || !sessionDestroyed){
-        if(sessionId == session[i].id && sessionDestroyed == 0){   //Se a session fornecida for igual a encontrada
-            session.splice(i, 1);       //Deleta esta session do array de sessions
-            sessionDestroyed = 1;
-        }
-        i++;
-    }
-    if(sessionDestroyed == 1){      //Caso a session tenha sido destruída
+    if(verificaSession(sessionId, 1) == 1){      //Caso a session exista, destrói
         res.end();
         console.log('session destruída, logout feito com sucesso');
-    }else{                  //Caso a session não tenha sido encontrada
+    }else{                  //Caso a session não exista
         console.log('session id não encontrada para logout: '+sessionId);
         res.end(); 
     }
@@ -189,3 +280,19 @@ app.route('/cadastro')
         res.end();
     });
 });
+
+/* */
+function verificaSession(sessionId, destroy){
+    var i = 0;
+    var found = 0;
+    var data = new Date();
+    while(i < session.length && found == 0){    //Percorre o array de sessions
+        if(session[i].id == sessionId && session[i].expireDate < data){  //Se a session existe e não expirou
+            found = 1;      //Deixa found igual a 1
+            if(destroy == 1)        //Caso seja pra destruir a session
+                session.splice(i,i);    //Destrói a session
+        }
+        i++;
+    }
+    return found;
+}

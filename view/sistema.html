@@ -5,12 +5,47 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <style>
+        table{
+            margin-top: 20px;
+        }
+        td,th{
+            border: 1px solid gray;
+            padding: 4px;
+        }
+    </style>
 </head>
 <body>
     <div id="vueSistema">
         <h2>Sistema</h2>
-        <a href="#" @click="fazerLogout">logout</a>
-        
+        <a href="#" @click="fazerLogout">Logout</a>
+        <div>
+            <h3>Recursos</h3>
+            <div id="busca">
+                Buscar por: 
+                <input type="radio" name="buscaTipo" value="id" v-model="select.tipo"> id
+                <input type="radio" name="buscaTipo" value="nome" v-model="select.tipo"> Nome
+                <input type="radio" name="buscaTipo" value="data" v-model="select.tipo"> Data (TODO)
+                <input type="radio" name="buscaTipo" value="dono" v-model="select.tipo"> Dono
+                <br><br>
+                Valor: <input type="text" v-model="select.valor"> 
+                <button type="button" @click="selectRecurso(1)">Buscar</button>
+            </div>
+            
+            <table id="recursos">
+                <thead>
+                    <tr>
+                        <th>Id</th><th>Nome</th><th>Data</th><th>Dono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(recurso, i) in recursos">
+                        <td>{{recurso.id}}</td><td>{{recurso.nome}}</td>
+                        <td>{{recurso.data}}</td><td>{{recurso.donoNome}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script src="../controller/sistema-controller.js"></script>
 </body>

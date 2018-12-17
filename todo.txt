@@ -1,5 +1,6 @@
 resources ok
 CRUD
+cadastro ok
 login/logout session ok
 file upload
 file read/write
