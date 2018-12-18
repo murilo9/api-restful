@@ -139,9 +139,9 @@ app.route('/recurso')
                 //Coleta os dados da request:
                 var recursoId = req.body.id;
                 var recursoNome = req.body.nome;
-                var reecursoDono = req.body.dono;
+                var recursoDono = req.body.dono;
                 //Tenta fazer a inserção no BD:
-                var sql = "INSERT INTO tbRecursos VALUES("+recursoId+",'"+recursoNome+"',NOW(),'"+reecursoDono+"')";
+                var sql = "INSERT INTO tbRecursos VALUES("+recursoId+",'"+recursoNome+"',NOW(),'"+recursoDono+"')";
                 pool.query(sql, function(err, result, fields){
                     if(err){
                         console.log(err);
@@ -156,10 +156,26 @@ app.route('/recurso')
                 break;
 
             case 'delete':      //Deletar recurso
-
+                //Coleta os dados da request:
+                var recursoId = req.body.id;
+                var recursoDono = req.body.dono;
+                //Tenta deletar o recurso do BD:
+                var sql = "DELETE FROM tbRecursos WHERE itId="+recursoId+" && stDono='"+recursoDono+"'";
+                pool.query(sql, function(err, result, fields){
+                    if(err){
+                        console.log(err);
+                        res.status(500);
+                        res.end();
+                        return 0;
+                    }
+                    if(result.affectedRows == 0)    //Se nada foi deletado, então o usuário não era dono do recurso
+                        res.status(401);    //Staus: 401 unauthorized
+                    res.end();
+                });
                 break;
 
             default:            //Em caso de função desconhecida
+                console.log('Função recebida: '+funcao);
                 res.status(400);    //Status: 400 bad request
                 res.end();
         }

@@ -49,6 +49,8 @@
                     <tr v-for="(recurso, i) in recursos">
                         <td>{{recurso.id}}</td><td>{{recurso.nome}}</td>
                         <td>{{recurso.data}}</td><td>{{recurso.donoNome}}</td>
+                        <td><button type="button" @click="deletarRecurso(recurso.id)">Deletar</button></td>
+                        <td><button type="button">Modificar</button></td>
                     </tr>
                 </tbody>
             </table>

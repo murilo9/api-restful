@@ -5,7 +5,7 @@ var sistemaController = new Vue({
         dataAgora: new Date(),
         select: {tipo: 'id', valor: '', spec: ''},    //Objeto da request de select
         create: {funcao: 'create', id: '', nome: '', dono: ''},     //Objeto da request de create
-        delete: {funcao: 'delete'},     //Objeto da request de delete
+        delete: {funcao: 'delete', id: '', dono: ''},     //Objeto da request de delete
         update: {funcao: 'update'},      //Objeto da request de update
         recursos: []
     },
@@ -18,6 +18,7 @@ var sistemaController = new Vue({
                 location.href="index.html";     //Redireciona de volta ao index
             });
         },
+
         //Funções de CRUD:
         selectRecurso: function(specific){              //----Função de Select----
             var self = this;    //Variável self para referenciar data
@@ -46,11 +47,12 @@ var sistemaController = new Vue({
                 }
             });
         },
+
         criarRecurso: function(){              //-----Função de Create----
-            //Adiciona os dados que faltam:
             var self = this;        //Variável self para referenciar data
+            //Adiciona os dados que faltam:
             this.create.id = Math.floor(Math.random()*9999999)      //Gera uma id aleatória
-            this.create.dono = Cookies.get('login');
+            this.create.dono = Cookies.get('login');        //Insere o email do usuário
             $.ajax({
                 url: 'http://localhost:8888/recurso',
                 method: 'post',
@@ -61,13 +63,31 @@ var sistemaController = new Vue({
                 },
                 success: function(res){
                     alert('Recurso inserido com sucesso');
-                    self.selectRecurso(0);
+                    self.selectRecurso(0);      //Atualiza a lista de recursos
                 }
             });
         },
-        deletarRecurso: function(){              //----Função de Delete----
-            //TODO
+
+        deletarRecurso: function(recursoId){              //----Função de Delete----
+            var self = this;    //Variável self para referenciar data
+            //Adiciona os dados que faltam:
+            this.delete.dono = Cookies.get('login');    //Insere o email do usuário
+            this.delete.id = recursoId;     //Insere a id do recurso a ser deletado
+            $.ajax({
+                url: 'http://localhost:8888/recurso',
+                method: 'post',
+                data: self.delete,
+                statusCode: {
+                    500: function(){ alert('Erro no servidor, tente mais tarde') },
+                    401: function(){ alert('Você não pode deletar um recurso que não é seu') }
+                },
+                success: function(res){
+                    alert('Recurso deletado com sucesso');
+                    self.selectRecurso(0);      //Atualiza a tabela de recursos
+                }
+            });
         },
+
         atualizarRecurso: function(){              //----Função de Update----
             //TODO
         }
