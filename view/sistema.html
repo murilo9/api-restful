@@ -13,6 +13,20 @@
             border: 1px solid gray;
             padding: 4px;
         }
+        #editaRecurso{
+            color: white;
+            position: fixed;
+            padding: 10%;
+            top: 30%;
+            width: 50%;
+            background: #202020;
+        }
+        #editaRecursoPanel{
+            color: black;
+            padding: 12px;
+            opacity: 1;
+            background: gray;
+        }
     </style>
 </head>
 <body>
@@ -39,7 +53,7 @@
                 <button type="button" @click="selectRecurso(1)">Buscar</button>
             </div>
             
-            <table id="recursos">
+            <table id="recursos" style="display: inline-block">
                 <thead>
                     <tr>
                         <th>Id</th><th>Nome</th><th>Data</th><th>Dono</th>
@@ -50,10 +64,19 @@
                         <td>{{recurso.id}}</td><td>{{recurso.nome}}</td>
                         <td>{{recurso.data}}</td><td>{{recurso.donoNome}}</td>
                         <td><button type="button" @click="deletarRecurso(recurso.id)">Deletar</button></td>
-                        <td><button type="button">Modificar</button></td>
+                        <td><button type="button" @click="verifAtualizarRecurso(recurso.id)">Modificar</button></td>
                     </tr>
                 </tbody>
             </table>
+            <div id="editaRecurso" v-if="editarRecurso"><!--Div dinâmica (v-if) de edição de recurso-->
+                <h2>Editar recurso</h2>
+                <div id="editaRecursoPanel">
+                    Nome: <input type="text" v-model="update.nome"><br><br>
+                    Data: <input type="text" v-model="update.data"><br><br>
+                </div>
+                <button type="button" @click="atualizarRecurso">Atualizar</button>
+                <button type="button" @click="fechaRecurso">Cancelar</button>
+            </div>
         </div>
     </div>
     <script src="../controller/sistema-controller.js"></script>

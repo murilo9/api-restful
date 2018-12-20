@@ -1,5 +1,5 @@
 resources ok
-CRUD
+CRUD ok
 cadastro ok
 login/logout session ok
 file upload

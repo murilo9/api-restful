@@ -53,9 +53,8 @@ app.route('/recurso/test')      //Rota de testes
     //TODO router de put
     //TODO delete router de delete
 
-/* Router de CRUD de recursos 
+/* Router de CRUD de recursos
     Recebe uma request com parâmetro indicando a função (exceto para Read),
-    retorna [...]
 */
 app.route('/recurso')
     .get(function(req, res){        //----------------Get: Read----------------
@@ -150,9 +149,27 @@ app.route('/recurso')
                     res.end();
                 });
                 break;
-            
-            case 'update':      //Atualizar recurso
 
+            case 'update':      //Atualizar recurso
+                //Coleta os dados da request:
+                var recursoId = req.body.id;
+                var recursoNome = req.body.nome;
+                var recursoData = req.body.data;
+                //Faz o update no DB:
+                console.log('recursoData = '+recursoData);
+                var sql = "UPDATE tbRecursos SET stNome = '"+recursoNome+"', dtData='"+recursoData+"' "+
+                            "WHERE itId="+recursoId;
+                pool.query(sql, function(err, result, fields){
+                    if(err){
+                        console.log(err);
+                        res.status(500);
+                        res.end();
+                        return 0;
+                    }
+                    if(result.affectedRows == 0)    //Se nada foi deletado, então houve algum erro na id
+                        res.status(500);    //Staus: 500 server issue
+                    res.end();
+                });
                 break;
 
             case 'delete':      //Deletar recurso
@@ -181,7 +198,7 @@ app.route('/recurso')
         }
     });
 
-/* Router de session 
+/* Router de session
     Recebe um objeto com parâmetro sessionId,
     retorna um status que indica se a session é válida ou não
 */
@@ -204,7 +221,7 @@ app.route('/session')
     else{               //Caso esta session não tena sido encontrada
         console.log('session id não encontrada: '+sessionId);
         res.status(404);    //Envia resposta vazia com status 404 not found
-        res.end();      
+        res.end();
     }
 });
 
@@ -246,7 +263,7 @@ app.route('/login')
     });
 });
 
-/* Router de logout 
+/* Router de logout
 Recebe um objeto com parâmetro sessionId,
 tenta eliminar a session se ela existir. Retorna sempre status 200.
 */
@@ -262,11 +279,11 @@ app.route('/logout')
         console.log('session destruída, logout feito com sucesso');
     }else{                  //Caso a session não exista
         console.log('session id não encontrada para logout: '+sessionId);
-        res.end(); 
+        res.end();
     }
 });
 
-/* Router de cadastro 
+/* Router de cadastro
     Recebe um objeto com parâmetros nome, email e senha,
     retorna status 200 se o cadsatro for bem-sucedido, e 400 (bad request)
     com uma mensagem de erro caso os dados não sejam aceitos no INSERT do DB.
@@ -289,7 +306,7 @@ app.route('/cadastro')
         var i = 0;
         while(i < result.length){       //Percorre o array de resultados
             if(result[i].stEmail == email){     //Caso o email já exista
-                res.status(400);        //Retorna status 400 e mensagem de erro 
+                res.status(400);        //Retorna status 400 e mensagem de erro
                 res.send({msg: 'Este email já está cadastrado'});
                 return 0;
             }
