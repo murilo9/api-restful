@@ -77,22 +77,22 @@ app.route('/recurso')
             console.log('buscar recurso específico: '+buscaTipo+'; valor: '+buscaValor);
             switch(buscaTipo){      //Define o sql script com base no critério de busca
                 case 'id':      //Busca por id
-                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, R.stFoto AS foto, U.stNome AS donoNome "+
                         "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.itId="+buscaValor;
                     break;
 
                 case 'nome':    //Busca por nome
-                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, R.stFoto AS foto, U.stNome AS donoNome "+
                         "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.stNome='"+buscaValor+"'";
                     break;
 
                 case 'data':    //Busca por data
-                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, R.stFoto AS foto,U.stNome AS donoNome "+
                         "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE R.dtData="+buscaValor;
                     break;
 
                 case 'dono':    //Busca por dono
-                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+                    var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, R.stFoto AS foto,U.stNome AS donoNome "+
                         "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail WHERE U.stNome='"+buscaValor+"'";
                     break;
 
@@ -104,7 +104,7 @@ app.route('/recurso')
         }
         else if(recursoSpec == 0){                              //Coletar todos os recursos: define o script para SELECT *
             console.log('buscar todos os recursos');
-            var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, U.stNome AS donoNome "+
+            var sql = "SELECT R.itId AS id, R.stNome AS nome, R.dtData AS data, R.stDono AS dono, R.stFoto AS foto, U.stNome AS donoNome "+
                         "FROM tbRecursos R INNER JOIN tbUsuarios U ON R.stDono=U.stEmail";
         }
         //Faz a consulta:
@@ -121,6 +121,7 @@ app.route('/recurso')
                 tmp.id = result[i].id;
                 tmp.nome = result[i].nome;
                 tmp.data = result[i].data;
+                tmp.foto = result[i].foto;
                 tmp.dono = result[i].dono;
                 tmp.donoNome = result[i].donoNome;
                 recursos.push(tmp);     //Insere o objeto temporário no array de recursos

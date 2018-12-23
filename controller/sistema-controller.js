@@ -36,10 +36,14 @@ var sistemaController = new Vue({
                     self.recursos = [];     //Limpa o array data.recursos primeiro
                     res.forEach(function(val, i){
                         //Cria o objeto temporário que acomodará os dados da response:
-                        var tmp = {id:'', nome:'', data:'', dono:'', donoNome:''};
+                        var tmp = {id:'', nome:'', data:'', foto: '', dono:'', donoNome:''};
                         tmp.id = res[i].id;
                         tmp.nome = res[i].nome;
                         tmp.data = res[i].data.slice(0, -5);
+                        if(res[i].foto == '')      //Caso o este recurso não tenha foto
+                            tmp.foto = '';
+                        else        //Caso o recurso tenha foto
+                            tmp.foto = "../server/recursos/_"+tmp.id+'/'+res[i].foto;      //Caminho do arquivo no servidor
                         tmp.dono = res[i].dono;
                         tmp.donoNome = res[i].donoNome;
                         self.recursos.push(tmp);    //Insere o objeto temporário em data.recursos

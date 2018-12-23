@@ -27,6 +27,9 @@
             opacity: 1;
             background: gray;
         }
+        img{
+            width: 98px;
+        }
     </style>
 </head>
 <body>
@@ -59,11 +62,19 @@
             <table id="recursos" style="display: inline-block">
                 <thead>
                     <tr>
-                        <th>Id</th><th>Nome</th><th>Data</th><th>Dono</th>
+                        <th>Foto</th><th>Id</th><th>Nome</th><th>Data</th><th>Dono</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(recurso, i) in recursos">
+                        <td>
+                            <template v-if="recurso.foto == ''"><!--Caso o recurso não tenha foto (v-if)-->
+                                <h4>Sem foto</h4>
+                            </template>
+                            <template v-else><!--Caso o recurso tenha foto (v-else)-->
+                                <img v-bind:src="recurso.foto">
+                            </template>
+                        </td>
                         <td>{{recurso.id}}</td><td>{{recurso.nome}}</td>
                         <td>{{recurso.data}}</td><td>{{recurso.donoNome}}</td>
                         <td><button type="button" @click="deletarRecurso(recurso.id)">Deletar</button></td>
