@@ -10,6 +10,8 @@ CREATE TABLE tbRecursos(
     stNome VARCHAR(50),
     dtData DATETIME DEFAULT NOW(),
     stDono VARCHAR(50) NOT NULL,
+    stFoto VARCHAR(128),
     PRIMARY KEY (itId),
     FOREIGN KEY (stDono) REFERENCES tbUsuarios(stEmail)
 ) ENGINE=innodb;
+

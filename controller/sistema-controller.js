@@ -5,7 +5,7 @@ var sistemaController = new Vue({
         editarRecurso: false,
         dataAgora: new Date(),
         select: {tipo: 'id', valor: '', spec: ''},    //Objeto da request de select
-        create: {funcao: 'create', id: '', nome: '', dono: ''},     //Objeto da request de create
+        create: {funcao: 'create', id: '', nome: '', dono: '', temFoto: false},     //Objeto da request de create
         delete: {funcao: 'delete', id: '', dono: ''},     //Objeto da request de delete
         update: {funcao: 'update', id: '', nome: '', data: ''},      //Objeto da request de update
         recursos: []
@@ -36,7 +36,7 @@ var sistemaController = new Vue({
                     self.recursos = [];     //Limpa o array data.recursos primeiro
                     res.forEach(function(val, i){
                         //Cria o objeto temporário que acomodará os dados da response:
-                        var tmp = {id:'', nome:'', data:'', dono:'', donoNome:''}    
+                        var tmp = {id:'', nome:'', data:'', dono:'', donoNome:''};
                         tmp.id = res[i].id;
                         tmp.nome = res[i].nome;
                         tmp.data = res[i].data.slice(0, -5);
@@ -63,6 +63,11 @@ var sistemaController = new Vue({
                     400: function(){ alert('Bad request (erro no código da página)') }
                 },
                 success: function(res){
+                    if(self.create.temFoto){    //Caso tenha uma foto para enviar
+                        //Coloca a id do recurso num cookie pra ser enviado pro server durante o upload:
+                        Cookies.set("ultimoRecursoCriadoId", self.create.id);
+                        $("#fotoForm").submit();    //Dá submit no formulario de foto
+                    }
                     alert('Recurso inserido com sucesso');
                     self.selectRecurso(0);      //Atualiza a lista de recursos
                 }

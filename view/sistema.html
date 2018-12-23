@@ -37,8 +37,11 @@
             <h3>Recursos</h3>
             <div id="cria">
                 <h4>Criar Recurso</h4>
-                Nome: <input type="text" v-model="create.nome"> 
-                <button type="button" @click="criarRecurso">Inserir</button><br><br>
+                <form id="fotoForm" method="post" enctype="multipart/form-data" action="http://localhost:8888/recurso/uploadfoto">
+                    Nome: <input type="text" v-model="create.nome"><br><br>
+                    <input type="file" name="iFoto"><input type="checkbox" v-model="create.temFoto"> Incluir imagem<br><br>
+                    <button type="button" @click="criarRecurso">Inserir</button>
+                </form><br>
                 Data atual: {{ dataAgora }}<br><br>
             </div>
             <div id="busca">
