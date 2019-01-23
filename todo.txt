@@ -2,5 +2,4 @@ resources ok
 CRUD ok
 cadastro ok
 login/logout session ok
-file upload
-file read/write
+file upload ok
